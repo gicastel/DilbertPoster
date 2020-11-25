@@ -1,4 +1,4 @@
-name: Deploy Function App (.NET Core) to ComixRss
+name: Deploy Function App (.NET Core) to DilbertPosterFunctionApp
 on:
   push:
     branches:
