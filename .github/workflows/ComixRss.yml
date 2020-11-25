@@ -3,13 +3,14 @@ on:
   push:
     branches:
     - main
+    - cicd     
 env:
   AZURE_FUNCTIONAPP_NAME: ComixRss
   AZURE_FUNCTIONAPP_PACKAGE_PATH: .
   AZURE_FUNCTIONAPP_PUBLISH_PROFILE: ${{ secrets.COMIXRSS_PUBLISH_PROFILE }}
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 3.1.x
-  PROJECT_PATH: .
+  PROJECT_PATH: DilbertPoster.csproj
 jobs:
   build-and-deploy:
     runs-on: windows-latest
