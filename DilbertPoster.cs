@@ -8,13 +8,14 @@ using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.InputFiles;
 
 namespace DilbertPoster
 {
     public static class DilbertPoster
     {
         [FunctionName(nameof(GetAndPostStripAsync))]
-        public static async System.Threading.Tasks.Task GetAndPostStripAsync([TimerTrigger("0 0 9 * * *")]TimerInfo myTimer, ILogger log)
+        public static async System.Threading.Tasks.Task GetAndPostStripAsync([TimerTrigger("0 0 9 * * *", RunOnStartup = true)]TimerInfo myTimer, ILogger log)
         {
             // <img class="img-responsive img-comic" width="xxx" height="xxx" alt="xxxxx - Dilbert by Scott Adams" src="xxxxx" />
             Regex dilbertStrip = new Regex(@"<img class=""img-responsive img-comic"" width=""([0-9]+)"" height=""([0-9]+)"" alt=""(.+)"" src=""(.+)"" />");
@@ -41,7 +42,8 @@ namespace DilbertPoster
                     strip = "https:" + strip;
 
                 Message message = await HorseBot.SendPhotoAsync(channel,
-                            photo: strip,
+                            // trick the Telegram API into thinking it's a gif 
+                            photo: new InputOnlineFile(strip + ".gif"),
                             caption: title,
                             parseMode: ParseMode.Html);
             }
