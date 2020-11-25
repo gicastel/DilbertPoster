@@ -2,8 +2,7 @@ name: Deploy Function App (.NET Core) to ComixRss
 on:
   push:
     branches:
-    - main
-    - cicd     
+    - main    
 env:
   AZURE_FUNCTIONAPP_NAME: ComixRss
   AZURE_FUNCTIONAPP_PACKAGE_PATH: .
