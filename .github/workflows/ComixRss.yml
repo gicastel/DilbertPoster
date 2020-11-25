@@ -1,0 +1,36 @@
+name: Deploy Function App (.NET Core) to ComixRss
+on:
+  push:
+    branches:
+    - main
+env:
+  AZURE_FUNCTIONAPP_NAME: ComixRss
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: .
+  AZURE_FUNCTIONAPP_PUBLISH_PROFILE: ${{ secrets.COMIXRSS_PUBLISH_PROFILE }}
+  CONFIGURATION: Release
+  DOTNET_CORE_VERSION: 3.1.x
+  PROJECT_PATH: .
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout GitHub Action
+      uses: actions/checkout@master
+    - name: Setup .NET Core SDK ${{ env.DOTNET_CORE_VERSION }}
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+    - name: Resolve Project Dependencies Using Dotnet
+      run: >
+        pushd "./${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}"
+
+        dotnet build "{{ env.PROJECT_PATH }}" --configuration ${{ env.CONFIGURATION }} --output "./output"
+
+        popd
+      shell: pwsh
+    - name: Run Azure Functions Action
+      uses: Azure/functions-action@v1
+      with:
+        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+        publish-profile: ${{ env.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+        package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output
