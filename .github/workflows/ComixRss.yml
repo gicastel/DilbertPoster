@@ -1,15 +1,13 @@
-name: Deploy Function App (.NET Core) to ComixRss
+name: Deploy Function App (.NET Core) to DilbertPosterFunctionApp
 on:
   push:
     branches:
-    - main
+    - main    
 env:
   AZURE_FUNCTIONAPP_NAME: ComixRss
   AZURE_FUNCTIONAPP_PACKAGE_PATH: .
   AZURE_FUNCTIONAPP_PUBLISH_PROFILE: ${{ secrets.COMIXRSS_PUBLISH_PROFILE }}
-  CONFIGURATION: Release
   DOTNET_CORE_VERSION: 3.1.x
-  PROJECT_PATH: .
 jobs:
   build-and-deploy:
     runs-on: windows-latest
@@ -24,7 +22,7 @@ jobs:
       run: >
         pushd "./${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}"
 
-        dotnet build "{{ env.PROJECT_PATH }}" --configuration ${{ env.CONFIGURATION }} --output "./output"
+        dotnet build --configuration Release --output "./output"
 
         popd
       shell: pwsh
