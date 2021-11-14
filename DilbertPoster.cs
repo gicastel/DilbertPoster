@@ -1,10 +1,10 @@
-using System;
-using System.IO;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using System;
+using System.IO;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -59,8 +59,8 @@ namespace DilbertPoster
 
         private static async Task<string> ReadPage(string url)
         {
-            var request = WebRequest.CreateHttp(url);
-            var tResp = request.GetResponseAsync();
+            var client = new HttpClient();
+            var tResp = client.GetAsync(url);
             var tTimeout = Task.Delay(30 * 1000);
             if (await Task.WhenAny(tResp, tTimeout) == tTimeout)
             {
@@ -69,9 +69,9 @@ namespace DilbertPoster
             else
             {
                 var response = await tResp;
-                var stream = response.GetResponseStream();
+                var stream = await response.Content.ReadAsStreamAsync();
                 string html = "";
-                using (StreamReader sr = new StreamReader(stream))
+                using (StreamReader sr = new(stream))
                 {
                     html = await sr.ReadToEndAsync();
                 }

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DilbertPoster": {
+      "commandName": "Project",
+      "hotReloadEnabled": false
+    }
+  }
+}
