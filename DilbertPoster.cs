@@ -16,7 +16,8 @@ namespace DilbertPoster
     {
 
         private const bool runOnStartup = false;
-
+        
+        [Disable]
         [FunctionName(nameof(GetAndPostStripAsync))]
         public static async Task GetAndPostStripAsync([TimerTrigger("0 15 9 * * *", RunOnStartup = runOnStartup)]TimerInfo myTimer, ILogger log)
         {
