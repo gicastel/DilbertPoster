@@ -39,6 +39,9 @@ namespace DilbertPoster
             ILogger log)
         {
             string currentDate = context.GetInput<string>();
+            if (!context.IsReplaying)
+                log.LogInformation($"Starting strip search for {currentDate}...");
+
             int pollingInterval = 5 * 60; //5 minutes
             DateTime expiryTime = context.CurrentUtcDateTime.AddHours(1);
 
@@ -47,11 +50,13 @@ namespace DilbertPoster
                 var data = await context.CallActivityAsync<StripData>(nameof(ReadPageContent), currentDate);
                 if (!data.IsError)
                 {
-                    
+                    log.LogInformation("Strip found!");
                     await context.CallActivityAsync(nameof(SendToTelegram), data);
+                    log.LogInformation("Sent!");
                     return;
                 }
 
+                log.LogInformation("Still waiting...");
                 var nextCheck = context.CurrentUtcDateTime.AddSeconds(pollingInterval);
                 await context.CreateTimer(nextCheck, CancellationToken.None);
             }
