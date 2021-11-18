@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
@@ -15,10 +17,11 @@ namespace DilbertPoster
     public static class DilbertPoster
     {
 
-        private const bool runOnStartup = false;
-
         [FunctionName(nameof(GetAndPostStripAsync))]
-        public static async Task GetAndPostStripAsync([TimerTrigger("0 15 9 * * *", RunOnStartup = runOnStartup)]TimerInfo myTimer, ILogger log)
+        public static async Task GetAndPostStripAsync(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
+            ILogger log
+            )
         {
             // <img class="img-responsive img-comic" width="xxx" height="xxx" alt="xxxxx - Dilbert by Scott Adams" src="xxxxx" />
             Regex dilbertStrip = new Regex(@"<img class=""img-responsive img-comic"" width=""([0-9]+)"" height=""([0-9]+)"" alt=""(.+)"" src=""(.+)"" />");
