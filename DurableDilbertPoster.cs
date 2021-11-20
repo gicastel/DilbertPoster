@@ -67,7 +67,7 @@ namespace DilbertPoster
         [FunctionName(nameof(ReadPageContent))]
         public static async Task<StripData> ReadPageContent([ActivityTrigger] string currentDate, ILogger log)
         {
-            string url = "http://dilbert.com";
+            string url = "https://dilbert.com";
 
             var client = new HttpClient();
             var tResp = client.GetAsync(url);
@@ -101,6 +101,12 @@ namespace DilbertPoster
 
                 string title = div.Attributes["data-title"].Value;
                 string address = div.Attributes["data-image"].Value;
+
+                title = title.Trim();
+                if (title.Length > 0)
+                    title += " - ";
+
+                title += "Dilbert by Scott Adams";
                 
                 if (!address.StartsWith("https:"))
                     address = "https:" + address;
